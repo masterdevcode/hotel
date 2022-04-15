@@ -7,10 +7,12 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## INSTALLATION POUR PLE PROJET
+## MISE A POUR DU COMPOSER
 
 ```bash
 composer update
+```
+## INSTALLATION DES DEPENDEMCES DU DU PROJET
 
 ```bash
 composer install
