@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   app:
     build:
@@ -7,11 +6,12 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     ports:
-      - "86:80"  # Map port 80 of the container to port 8000 on the host
+      - "86:80"
     volumes:
       - .:/var/www/html
     networks:
       - laravel_network
+
 networks:
   laravel_network:
     driver: bridge
