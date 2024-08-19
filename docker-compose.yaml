@@ -8,7 +8,7 @@ services:
     ports:
       - "86:80"
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html/app
     command: php artisan migrate
     networks:
       - laravel_network
