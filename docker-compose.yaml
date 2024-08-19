@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     volumes:
-      - .:/var/www/html
+      - .:/app
     networks:
       - laravel_network
 
