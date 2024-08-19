@@ -1,18 +1,18 @@
-FROM php:8.0-apache
+# Use PHP-FPM 8.0
+FROM php:8.0-fpm
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev \
     libzip-dev libicu-dev git unzip libxml2-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip intl xml pdo pdo_mysql \
-    && a2enmod rewrite
+    && docker-php-ext-install gd zip intl xml pdo pdo_mysql
 
 # Set the working directory
-WORKDIR /var/www/html/app
+WORKDIR /var/www/html
 
 # Copy the Laravel application to the container
-COPY . /var/www/html/app
+COPY . .
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -21,13 +21,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --optimize-autoloader --no-dev
 
 # Set proper permissions
-RUN chown -R www-data:www-data /var/www/html/app/storage /var/www/html/app/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configure Apache
-RUN sed -i 's/\/var\/www\/html/\/var\/www\/html\/app\/public/g' /etc/apache2/sites-available/000-default.conf
+# Expose port 9000 for PHP-FPM
+EXPOSE 9000
 
-# Expose port 80
-EXPOSE 80
-
-# Start the Apache server
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]
