@@ -9,10 +9,10 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite
 
 # Set the working directory
-WORKDIR /var/www/html
+WORKDIR /var/www/html/app
 
 # Copy the Laravel application to the container
-COPY . .
+COPY . /var/www/html/app
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
