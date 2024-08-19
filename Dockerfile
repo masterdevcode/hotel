@@ -1,4 +1,3 @@
-# Use the official PHP image with Apache
 FROM php:8.0-apache
 
 # Install system dependencies and PHP extensions
@@ -23,6 +22,9 @@ RUN composer install --optimize-autoloader --no-dev
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Configure Apache
+RUN sed -i 's/\/var\/www\/html/\/var\/www\/html\/public/g' /etc/apache2/sites-available/000-default.conf
 
 # Expose port 80
 EXPOSE 80
