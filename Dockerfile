@@ -9,19 +9,16 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd zip intl xml pdo pdo_mysql
 
 # Set the working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
 # Copy the Laravel application to the container
-COPY . /var/www/html
+COPY . /app
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
-
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
