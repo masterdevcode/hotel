@@ -9,7 +9,7 @@ services:
       - "86:80"
     volumes:
       - .:/var/www/html
-    command: php artisan serve --host=0.0.0.0
+    command: php artisan serve --host=0.0.0.0 --port=86
     networks:
       - laravel_network
 
