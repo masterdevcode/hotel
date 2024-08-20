@@ -1,18 +1,27 @@
 version: '3.8'
 
 services:
-  app:
+  laravel-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
-    ports:
-      - "86:80"  # Mappe le port 80 du conteneur au port 86 de l'hôte pour le serveur Laravel
+    container_name: laravel-app
     volumes:
       - .:/var/www/html
-    environment:
-      - MIGRATE_ON_START=true  # Définit la variable d'environnement pour les migrations
-    command: php artisan serve --host=0.0.0.0 --port=86  # Utiliser le port 80 dans le conteneur pour la communication avec Nginx
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - laravel_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "86:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - laravel-app
     networks:
       - laravel_network
 
