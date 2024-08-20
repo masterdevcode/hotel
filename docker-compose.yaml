@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     ports:
-      - "8000:80"  # Mappe le port 80 du conteneur au port 8000 de l'hôte
+      - "86:80"  # Mappe le port 80 du conteneur au port 8000 de l'hôte
     volumes:
       - .:/var/www/html
     environment:
