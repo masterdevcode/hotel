@@ -1,29 +1,33 @@
-# Use PHP-FPM 8.0
+# Utiliser l'image PHP-FPM 8.0
 FROM php:8.0-fpm
 
-# Install system dependencies and PHP extensions
+# Installer les dépendances système et les extensions PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev \
     libzip-dev libicu-dev git unzip libxml2-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip intl xml pdo pdo_mysql
 
-# Set the working directory
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copy the Laravel application to the container
+# Copier l'application Laravel dans le conteneur
 COPY . /app
 
-# Set proper permissions for Laravel
-RUN chmod -R 755 /app
+# Copier le script d'entrée
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# Install Composer
+# Donner les permissions d'exécution au script d'entrée
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies
+# Installer les dépendances PHP
 RUN composer install --optimize-autoloader --no-dev
 
-# Expose port 9000 for PHP-FPM
+# Exposer le port 9000 pour PHP-FPM
 EXPOSE 9000
 
-CMD ["php-fpm"]
+# Définir le script d'entrée comme commande à exécuter
+ENTRYPOINT ["entrypoint.sh"]
