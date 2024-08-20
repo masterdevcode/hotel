@@ -12,7 +12,7 @@ services:
       - .:/var/www/html
     environment:
       - MIGRATE_ON_START=true  # Définit la variable d'environnement pour les migrations
-    command: php artisan serve --host=0.0.0.0 --port=80  # Utiliser le port 80 dans le conteneur pour la communication avec Nginx
+    command: php artisan serve --host=0.0.0.0 --port=86  # Utiliser le port 80 dans le conteneur pour la communication avec Nginx
     networks:
       - laravel_network
 
