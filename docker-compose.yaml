@@ -21,7 +21,7 @@ services:
     container_name: nginx_proxy_manager
     ports:
       - "87:80"   # Port HTTP
-      - "443:443" # Port HTTPS
+      - "447:443" # Port HTTPS
     volumes:
       - nginx-proxy-manager-data:/data
       - nginx-proxy-manager-letsencrypt:/etc/letsencrypt
