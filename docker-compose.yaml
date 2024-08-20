@@ -10,13 +10,9 @@ services:
       - .:/var/www/html
     networks:
       - laravel_network
-    environment:
-      - MIGRATE_ON_START=true  # Activer les migrations au démarrage
 
   nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    image: nginx:latest
     container_name: nginx
     ports:
       - "86:80"
