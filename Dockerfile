@@ -9,10 +9,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd zip intl xml pdo pdo_mysql
 
 # Définir le répertoire de travail
-WORKDIR /app
+WORKDIR /var/www/html
 
 # Copier l'application Laravel dans le conteneur
-COPY . /app
+COPY . /var/www/html
 
 # Copier le script d'entrée
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
