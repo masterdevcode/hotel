@@ -7,16 +7,31 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     ports:
-      - "86:80"  # Mappe le port 80 du conteneur au port 8000 de l'hôte
+      - "86:80"  # Mappe le port 80 du conteneur au port 86 de l'hôte pour le serveur Laravel
     volumes:
       - .:/var/www/html
     environment:
       - MIGRATE_ON_START=true  # Définit la variable d'environnement pour les migrations
-    command: php artisan serve --host=0.0.0.0 --port=86
+    command: php artisan serve --host=0.0.0.0 --port=80  # Utiliser le port 80 dans le conteneur pour la communication avec Nginx
+    networks:
+      - laravel_network
 
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx_proxy_manager
+    ports:
+      - "87:80"   # Port HTTP
+      - "443:443" # Port HTTPS
+    volumes:
+      - nginx-proxy-manager-data:/data
+      - nginx-proxy-manager-letsencrypt:/etc/letsencrypt
     networks:
       - laravel_network
 
 networks:
   laravel_network:
     driver: bridge
+
+volumes:
+  nginx-proxy-manager-data:
+  nginx-proxy-manager-letsencrypt:
