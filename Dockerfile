@@ -15,8 +15,7 @@ WORKDIR /app
 COPY . /app
 
 # Set proper permissions for Laravel
-RUN chown -R www-data:www-data /app \
-    && chmod -R 755 /app
+RUN chmod -R 755 /app
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
