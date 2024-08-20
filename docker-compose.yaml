@@ -1,16 +1,6 @@
 version: '3.8'
 
 services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - "86:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - .:/var/www/html
-    depends_on:
-      - app
   app:
     build:
       context: .
@@ -21,6 +11,16 @@ services:
     networks:
       - laravel_network
 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "86:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - .:/var/www/html
+    depends_on:
+      - app
     networks:
       - laravel_network
 
