@@ -33,7 +33,7 @@ services:
       - nginx-proxy-manager-data:/data
       - nginx-proxy-manager-letsencrypt:/etc/letsencrypt
     depends_on:
-      - mysql_db
+      - mysqldb
     mysqldb:
       container_name: mysql_db
       image: jc21/mariadb-aria
