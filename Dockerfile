@@ -26,8 +26,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Installer les dépendances PHP
 RUN composer install --optimize-autoloader --no-dev
 
-# Exposer le port 9000 pour PHP-FPM
-EXPOSE 9000
+# Exposer le port 80 pour PHP-FPM
+EXPOSE 80
 
 # Définir le script d'entrée comme commande à exécuter
 ENTRYPOINT ["entrypoint.sh"]
