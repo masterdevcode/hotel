@@ -1,6 +1,13 @@
 version: '3'
 services:
 
+  laravel-app:
+    build:
+      context: .
+      dockerfile: laravel.Dockerfile
+    networks:
+      - app-network
+
   nginx:
     build:
       context: .
@@ -11,19 +18,6 @@ services:
       - laravel-app
     networks:
       - app-network
-
-  laravel-app:
-    build:
-      context: .
-      dockerfile: laravel.Dockerfile
-    environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
-    volumes:
-      - .:/var/www/html
-    networks:
-      - app-network
-
 networks:
   app-network:
     driver: bridge
