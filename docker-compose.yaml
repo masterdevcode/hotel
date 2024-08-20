@@ -20,7 +20,8 @@ services:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx_proxy_manager
     ports:
-      - "87:80"   # Port HTTP
+      - "87:81"
+      - "80:80"   # Port HTTP
       - "447:443" # Port HTTPS
     environment:
       - MYSQL_HOST=159.223.206.185
