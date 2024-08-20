@@ -6,21 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: laravel_app
-    volumes:
-      - .:/var/www/html
-    networks:
-      - laravel_network
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx
     ports:
-      - "86:80"
+      - "8000:80"  # Mappe le port 80 du conteneur au port 8000 de l'hôte
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - .:/var/www/html
-    depends_on:
-      - app
+    environment:
+      - MIGRATE_ON_START=true  # Définit la variable d'environnement pour les migrations
     networks:
       - laravel_network
 
