@@ -24,9 +24,9 @@ services:
       - "88:80"   # Port HTTP
       - "447:443" # Port HTTPS
     environment:
-      - MYSQL_HOST=159.223.206.185
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
+      - MYSQL_HOST=mysqldb
+      - MYSQL_PORT=3307
+      - MYSQL_USER=nginx
       - MYSQL_PASSWORD=1XinI8x2ApWrrx9EvHwSoGk9RDXztlYNk9H47xQWaGbXeNKE7ET0bt5elX7n4Gvp
       - MYSQL_DATABASE=npm
     volumes:
