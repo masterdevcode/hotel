@@ -20,11 +20,19 @@ services:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx_proxy_manager
     ports:
-      - "87:80"   # Port HTTP
-      - "447:443" # Port HTTPS
+      - "80:80"   # Port HTTP
+      - "443:443" # Port HTTPS
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=1XinI8x2ApWrrx9EvHwSoGk9RDXztlYNk9H47xQWaGbXeNKE7ET0bt5elX7n4Gvp
+      - MYSQL_DATABASE=npm
     volumes:
       - nginx-proxy-manager-data:/data
       - nginx-proxy-manager-letsencrypt:/etc/letsencrypt
+    depends_on:
+      - mysql
     networks:
       - laravel_network
 
