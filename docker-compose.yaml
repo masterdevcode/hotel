@@ -1,16 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
-    volumes:
-      - .:/var/www/html
-    networks:
-      - laravel_network
-
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -21,6 +11,16 @@ services:
       - .:/var/www/html
     depends_on:
       - app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    volumes:
+      - .:/var/www/html
+    networks:
+      - laravel_network
+
     networks:
       - laravel_network
 
