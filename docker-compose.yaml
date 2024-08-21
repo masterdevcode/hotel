@@ -18,6 +18,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: laravel-app
+  ports:
+      - "9000:9000"
     volumes:
       - ./storage:/var/www/html/storage
     networks:

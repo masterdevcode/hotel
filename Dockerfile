@@ -32,6 +32,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Exposer le port 9000 pour PHP-FPM
 EXPOSE 9000
 
+CMD ["php-fpm"]
+
 # Étape 2 : Utiliser l'image Nginx pour servir l'application Laravel
 FROM nginx:1.19 AS nginx
 
