@@ -16,9 +16,15 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nginx \
     supervisor \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-# Step 2: Add PHP repository and install PHP
+# Step 2: Set the timezone
+ENV TZ=America/New_York
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+# Step 3: Add PHP repository and install PHP
 RUN add-apt-repository ppa:ondrej/php && \
     apt-get update && \
     apt-get install -y \
@@ -31,31 +37,31 @@ RUN add-apt-repository ppa:ondrej/php && \
     php8.0-bcmath \
     && rm -rf /var/lib/apt/lists/*
 
-# Step 3: Install Composer
+# Step 4: Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Step 4: Define the working directory
+# Step 5: Define the working directory
 WORKDIR /var/www/html
 
-# Step 5: Copy Laravel application into the container
+# Step 6: Copy Laravel application into the container
 COPY . .
 
-# Step 6: Set the correct permissions
+# Step 7: Set the correct permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 storage bootstrap/cache
 
-# Step 7: Install PHP dependencies
+# Step 8: Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Step 8: Copy the Nginx configuration file
+# Step 9: Copy the Nginx configuration file
 COPY nginx/nginx.conf /etc/nginx/sites-available/default
 
-# Step 9: Copy the entrypoint script and give it execution permissions
+# Step 10: Copy the entrypoint script and give it execution permissions
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Step 10: Expose necessary ports
+# Step 11: Expose necessary ports
 EXPOSE 80
 
-# Step 11: Define the default command
+# Step 12: Define the default command
 CMD ["/usr/local/bin/entrypoint.sh"]
