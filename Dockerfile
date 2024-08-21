@@ -17,8 +17,8 @@ WORKDIR /var/www/html
 # Copier l'application Laravel dans le conteneur
 COPY . .
 
-RUN chmod -R 777 ./storage
-
+# Donner les permissions d'écriture nécessaires
+RUN chmod -R 775 storage bootstrap/cache
 
 # Installer les dépendances PHP
 RUN composer install --optimize-autoloader --no-dev
@@ -32,6 +32,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Exposer le port 9000 pour PHP-FPM
 EXPOSE 9000
 
+# Démarrer PHP-FPM
 CMD ["php-fpm"]
 
 # Étape 2 : Utiliser l'image Nginx pour servir l'application Laravel
@@ -46,5 +47,5 @@ COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 # Exposer le port 80 pour Nginx
 EXPOSE 80
 
-# Définir le script d'entrée comme commande à exécuter
+# Démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]
