@@ -27,7 +27,7 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN composer install --optimize-autoloader --no-dev
 
 # Copier le fichier de configuration Nginx dans le conteneur
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Exposer les ports nécessaires
 EXPOSE 80 9000
