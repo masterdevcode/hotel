@@ -39,7 +39,7 @@ CMD ["php-fpm"]
 FROM nginx:1.19 AS nginx
 
 # Copier les fichiers de l'application Laravel depuis l'étape précédente
-COPY --from=laravel-app /var/www/html /var/www/html
+COPY --from=laravel-app /var/www/html  /usr/share/nginx/html
 
 # Copier la configuration Nginx
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
