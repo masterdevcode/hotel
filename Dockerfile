@@ -30,13 +30,13 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 EXPOSE 9000
 
 # Étape 2 : Utiliser l'image Nginx pour servir l'application Laravel
-FROM nginx:1.19
+FROM nginx:1.19 AS nginx
 
 # Copier les fichiers de l'application Laravel depuis l'étape précédente
 COPY --from=laravel-app /var/www/html /var/www/html
 
 # Copier la configuration Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exposer le port 80 pour Nginx
 EXPOSE 80
