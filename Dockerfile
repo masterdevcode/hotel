@@ -44,6 +44,9 @@ COPY --from=laravel-app /var/www/html /var/www/html
 # Copier la configuration Nginx
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Donner les permissions d'écriture nécessaires sur les répertoires
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Exposer le port 80 pour Nginx
 EXPOSE 80
 
