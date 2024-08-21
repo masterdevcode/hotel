@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
 # Define working directory
-WORKDIR /var/www/html
+WORKDIR /usr/share/nginx/html/
 
 # Copy Laravel application into the container
 COPY . .
