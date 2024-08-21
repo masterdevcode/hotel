@@ -9,8 +9,6 @@ services:
     ports:
       - "86:80"  # Map port 86 on the host to port 80 on the container
       - "9001:9000" # Map port 9000 on the host to port 9000 on the container
-    volumes:
-      - .:/var/www/html  # Mount the current directory to /var/www/html in the container
     networks:
       - app-network
 
