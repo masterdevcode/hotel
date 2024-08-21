@@ -1,66 +1,37 @@
-# Base image: Ubuntu
-FROM ubuntu:22.04 as base
+# Base image: Ubuntu with PHP 8.0-FPM
+FROM php:8.0-fpm AS base
 
-# Step 1: Install necessary dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    software-properties-common \
-    curl \
-    gnupg \
-    ca-certificates \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    libicu-dev \
-    git \
-    unzip \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libzip-dev libicu-dev git unzip libxml2-dev \
     nginx \
-    supervisor \
-    tzdata \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip intl xml pdo pdo_mysql \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure timezone data non-interactively
-ENV DEBIAN_FRONTEND=noninteractive
-RUN dpkg-reconfigure -f noninteractive tzdata
-
-# Step 2: Add PHP repository and install PHP
-RUN add-apt-repository ppa:ondrej/php && \
-    apt-get update && \
-    apt-get install -y \
-    php8.0-fpm \
-    php8.0-gd \
-    php8.0-zip \
-    php8.0-intl \
-    php8.0-pdo \
-    php8.0-mysql \
-    php8.0-bcmath \
-    && rm -rf /var/lib/apt/lists/*
-
-# Step 3: Install Composer
+# Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Step 4: Define the working directory
+# Define working directory
 WORKDIR /var/www/html
 
-# Step 5: Copy Laravel application into the container
+# Copy Laravel application into the container
 COPY . .
 
-# Step 6: Set the correct permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 775 storage bootstrap/cache
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Step 7: Install PHP dependencies
+# Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Step 8: Copy the Nginx configuration file
-COPY nginx/nginx.conf /etc/nginx/sites-available/default
+# Copy the Nginx configuration file
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Step 9: Copy the entrypoint script and give it execution permissions
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Expose necessary ports
+EXPOSE 80 9000
 
-# Step 10: Expose necessary ports
-EXPOSE 80
-
-# Step 11: Define the default command
-CMD ["/usr/local/bin/entrypoint.sh"]
+# Start PHP-FPM and Nginx
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
