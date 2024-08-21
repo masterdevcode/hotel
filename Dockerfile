@@ -2,7 +2,8 @@
 FROM ubuntu:22.04 as base
 
 # Step 1: Install necessary dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
     php8.0-fpm php8.0-mysql php8.0-xml php8.0-mbstring php8.0-zip php8.0-intl \
     php8.0-gd php8.0-curl php8.0-bcmath php8.0-json \
     libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev git unzip curl \
