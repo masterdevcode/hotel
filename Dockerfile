@@ -17,6 +17,9 @@ WORKDIR /var/www/html
 # Copier l'application Laravel dans le conteneur
 COPY . .
 
+RUN chmod -R 777 ./storage
+
+
 # Installer les dépendances PHP
 RUN composer install --optimize-autoloader --no-dev
 
