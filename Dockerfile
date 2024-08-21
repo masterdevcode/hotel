@@ -1,54 +1,40 @@
-# Étape 1 : Utiliser l'image PHP-FPM 8.0 pour construire l'application Laravel
-FROM php:8.0-fpm AS laravel-app
+# Base image: Ubuntu with PHP 8.0-FPM
+FROM ubuntu:22.04 as base
 
-# Installer les dépendances système et les extensions PHP
+# Step 1: Install necessary dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev \
-    libzip-dev libicu-dev git unzip libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip intl xml pdo pdo_mysql
+    php8.0-fpm php8.0-mysql php8.0-xml php8.0-mbstring php8.0-zip php8.0-intl \
+    php8.0-gd php8.0-curl php8.0-bcmath php8.0-json \
+    libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev git unzip curl \
+    nginx supervisor \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Installer Composer
+# Step 2: Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
+# Step 3: Define the working directory
 WORKDIR /var/www/html
 
-# Copier l'application Laravel dans le conteneur
+# Step 4: Copy Laravel application into the container
 COPY . .
 
-# Donner les permissions d'écriture nécessaires
-RUN chmod -R 775 storage bootstrap/cache
+# Step 5: Set the correct permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 775 storage bootstrap/cache
 
-# Installer les dépendances PHP
+# Step 6: Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Copier le script d'entrée
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+# Step 7: Copy the Nginx configuration file
+COPY nginx/nginx.conf /etc/nginx/sites-available/default
 
-# Donner les permissions d'exécution au script d'entrée
+# Step 8: Copy the entrypoint script and give it execution permissions
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Exposer le port 9000 pour PHP-FPM
-EXPOSE 9000
-
-# Démarrer PHP-FPM
-CMD ["php-fpm"]
-
-# Étape 2 : Utiliser l'image Nginx pour servir l'application Laravel
-FROM nginx:1.19 AS nginx
-
-# Copier les fichiers de l'application Laravel depuis l'étape précédente
-COPY --from=laravel-app /var/www/html /var/www/html
-
-# Copier la configuration Nginx
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Donner les permissions d'écriture nécessaires sur les répertoires
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Exposer le port 80 pour Nginx
+# Step 9: Expose necessary ports
 EXPOSE 80
 
-# Démarrer Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Step 10: Define the default command
+CMD ["/usr/local/bin/entrypoint.sh"]

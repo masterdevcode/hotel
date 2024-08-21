@@ -1,23 +1,15 @@
-version: '3'
+version: '3.8'
+
 services:
-
-  nginx:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
-      target: nginx
+      target: base
     ports:
-      - "86:80"
-    depends_on:
-      - laravel-app
-    networks:
-      - app-network
-
-  laravel-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: laravel-app
+      - "86:80"  # Map port 86 on the host to port 80 on the container
+    volumes:
+      - .:/var/www/html  # Mount the current directory to /var/www/html in the container
     networks:
       - app-network
 
