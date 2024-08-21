@@ -20,7 +20,6 @@ services:
       target: laravel-app
     ports:
       - "8007:8000" # Exposes port 8000 on the host to port 8000 on the container
-      - "9000:9000" # Exposes port 8000 on the host to port 8000 on the container
     command: php artisan serve --host=0.0.0.0 --port=8007
     networks:
       - app-network
