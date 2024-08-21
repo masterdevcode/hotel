@@ -3,30 +3,28 @@ FROM ubuntu:22.04 as base
 
 # Installer les dépendances système
 RUN apt-get update && apt-get install -y \
-software-properties-common \
-ca-certificates \
-apt-transport-https \
-lsb-release \
-gnupg \
-&& rm -rf /var/lib/apt/lists/*
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libicu-dev \
+    git \
+    unzip \
+    curl \
+    nginx \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
 
-# Ajouter le dépôt PPA pour PHP 8.0
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:ondrej/php
+# Installer les extensions PHP
+RUN docker-php-ext-install \
+    gd \
+    zip \
+    intl \
+    pdo \
+    pdo_mysql \
+    bcmath \
+    && rm -rf /var/lib/apt/lists/*
 
-# Installer les extensions PHP 8.0
-RUN apt-get update && apt-get install -y \
-php8.0-fpm \
-php8.0-mysql \
-php8.0-xml \
-php8.0-mbstring \
-php8.0-zip \
-php8.0-intl \
-php8.0-gd \
-php8.0-curl \
-php8.0-bcmath \
-php8.0-json \
-&& rm -rf /var/lib/apt/lists/*
 
 # Step 2: Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
