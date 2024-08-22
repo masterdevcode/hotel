@@ -21,7 +21,6 @@ chmod -R ugo+rw /root/.composer
 if [ ! -d "/var/www/html/vendor" ]; then
     echo "Installing Composer dependencies..."
     composer install --no-interaction --prefer-dist --optimize-autoloader
-    chmod -R 777 /var/www/html
 fi
 
 # Start the application with or without gosu
