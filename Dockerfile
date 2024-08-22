@@ -7,7 +7,7 @@ ENV NODE_VERSION=20
 ENV POSTGRES_VERSION=13
 
 WORKDIR /var/www/html
-
+COPY . .
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
 ENV SUPERVISOR_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan serve --host=0.0.0.0 --port=80"
