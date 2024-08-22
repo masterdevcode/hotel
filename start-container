@@ -24,3 +24,11 @@ if [ $# -gt 0 ]; then
 else
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
+
+# Ensure Composer dependencies are installed
+if [ ! -d "/var/www/html/vendor" ]; then
+    composer install --no-interaction --prefer-dist --optimize-autoloader
+fi
+
+#Start the application
+exec "$@"
