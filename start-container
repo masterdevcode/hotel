@@ -1,34 +1,35 @@
 #!/usr/bin/env bash
 
+# Check if SUPERVISOR_PHP_USER is valid
 if [ "$SUPERVISOR_PHP_USER" != "root" ] && [ "$SUPERVISOR_PHP_USER" != "sail" ]; then
     echo "You should set SUPERVISOR_PHP_USER to either 'sail' or 'root'."
     exit 1
 fi
 
+# Adjust user if necessary
 if [ ! -z "$WWWUSER" ]; then
     usermod -u $WWWUSER sail
 fi
 
-if [ ! -d /.composer ]; then
-    mkdir /.composer
+# Ensure .composer directory exists and has correct permissions
+if [ ! -d "/root/.composer" ]; then
+    mkdir /root/.composer
+fi
+chmod -R ugo+rw /root/.composer
+
+# Install Composer dependencies if vendor directory is missing
+if [ ! -d "/var/www/html/vendor" ]; then
+    echo "Installing Composer dependencies..."
+    composer install --no-interaction --prefer-dist --optimize-autoloader
 fi
 
-chmod -R ugo+rw /.composer
-
+# Start the application with or without gosu
 if [ $# -gt 0 ]; then
     if [ "$SUPERVISOR_PHP_USER" = "root" ]; then
         exec "$@"
     else
-        exec gosu $WWWUSER "$@"
+        exec gosu $SUPERVISOR_PHP_USER "$@"
     fi
 else
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
-
-# Ensure Composer dependencies are installed
-if [ ! -d "/var/www/html/vendor" ]; then
-    composer install --no-interaction --prefer-dist --optimize-autoloader
-fi
-
-#Start the application
-exec "$@"
