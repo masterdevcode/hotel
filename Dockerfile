@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 LABEL maintainer="Taylor Otwell"
 
-ENV WWWGROUP=www-data
+ENV WWWGROUP=1000
 ENV NODE_VERSION=20
 ENV POSTGRES_VERSION=13
 
