@@ -20,6 +20,7 @@ chmod -R ugo+rw /root/.composer
 # Install Composer dependencies if vendor directory is missing
 if [ ! -d "/var/www/html/vendor" ]; then
     echo "Installing Composer dependencies..."
+    composer update
     composer install --no-interaction --prefer-dist --optimize-autoloader
 fi
 
