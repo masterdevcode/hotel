@@ -22,7 +22,7 @@ COPY . .
 # Ajuster les permissions des fichiers et dossiers
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache  \
-    && chmod -R 755 /var/www/html
+    && chmod -R 777 /var/www/html
 
 # Installer les dépendances PHP
 RUN composer install --optimize-autoloader --no-dev
