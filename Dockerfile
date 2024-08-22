@@ -14,8 +14,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Installer Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
-
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 
 # Copier l'application Laravel dans le conteneur
@@ -26,7 +25,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
 # Installer les dépendances PHP
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Copier le fichier de configuration Nginx dans le conteneur
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
