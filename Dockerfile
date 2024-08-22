@@ -62,9 +62,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
-# Ensure Composer dependencies are installed
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
 EXPOSE 80/tcp
 
 ENTRYPOINT ["start-container"]
