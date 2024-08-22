@@ -1,4 +1,4 @@
-# Étape 1 : Utiliser une image de base Ubuntu avec PHP 8.0-FPM
+# Étape 1 : Utiliser l'image PHP-FPM 8.0
 FROM php:8.0-fpm AS base
 
 # Installer les dépendances système et les extensions PHP nécessaires
@@ -21,8 +21,7 @@ COPY . .
 
 # Ajuster les permissions des fichiers et dossiers
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 storage bootstrap/cache \
-    && chmod -R 777 /var/www/html
+    && chmod -R 775 storage bootstrap/cache
 
 # Installer les dépendances PHP
 RUN composer install --optimize-autoloader --no-dev
