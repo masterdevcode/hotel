@@ -1,6 +1,9 @@
 # Étape 1 : Utiliser l'image PHP-FPM 8.0
 FROM php:8.0-fpm AS base
 
+# Définir le répertoire de travail
+WORKDIR /var/www/html
+
 # Installer les dépendances système et les extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev \
@@ -13,8 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Installer Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
-WORKDIR /var/www/html
+
 
 # Copier l'application Laravel dans le conteneur
 COPY . .
