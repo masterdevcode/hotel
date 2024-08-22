@@ -28,7 +28,7 @@ RUN npm install && npm run production
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Configure Supervisor
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./docker-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
