@@ -1,17 +1,20 @@
 FROM php:8.1-fpm
 
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     mysql-client \
     nodejs \
-    npm
-
-# Installer les dépendances système et les extensions PHP nécessaires
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev \
-    libzip-dev libicu-dev git unzip libxml2-dev nginx \
+    npm \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libicu-dev \
+    git \
+    unzip \
+    libxml2-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip intl xml pdo pdo_mysql \
     && apt-get clean \
