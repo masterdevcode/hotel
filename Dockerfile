@@ -1,54 +1,43 @@
+# Utiliser l'image officielle PHP-FPM
 FROM php:8.1-fpm
 
-# Install system dependencies
-RUN apt-get update -yq \
-    && apt-get install -yq \
+# Installer les dépendances et extensions PHP nécessaires
+RUN apt-get update && apt-get install -y \
     nginx \
-    supervisor \
-    mysql-client \
-    nodejs \
-    npm \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    libicu-dev \
-    git \
+    libonig-dev \
+    libxml2-dev \
+    zip \
     unzip \
-    libxml2-dev
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Configure and install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip intl xml pdo pdo_mysql
-
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install composer
+# Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copy application files
-COPY . .
+# Copier les fichiers de l'application
+COPY . /var/www/html
 
-# Install application dependencies
-RUN composer install --optimize-autoloader --no-dev
-RUN npm install && npm run production
+# Installer les dépendances de l'application
+RUN composer install --no-dev --optimize-autoloader
 
-# Configure Nginx
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+# Générer les fichiers optimisés de Laravel
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    php artisan event:cache
 
-# Configure Supervisor
-COPY ./docker-dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Copier la configuration Nginx
+COPY ./nginx/nginx.conf /etc/nginx/sites-available/default
 
-# Set permissions
+# Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-# Expose ports
-EXPOSE 80 443
+# Exposer le port 80
+EXPOSE 80
 
-# Start Supervisor
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Démarrer Nginx et PHP-FPM
+CMD service nginx start && php-fpm
