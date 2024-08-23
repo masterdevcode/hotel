@@ -36,7 +36,6 @@ COPY --from=build /app /var/www/html
 
 # Copier la configuration Nginx
 COPY ./nginx/nginx.conf /etc/nginx/sites-available/default
-RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
