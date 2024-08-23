@@ -45,8 +45,12 @@ RUN chmod +x /usr/local/bin/configure-php-fpm.sh && /usr/local/bin/configure-php
 COPY ./nginx/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 
 # S'assurer que le répertoire de logs PHP-FPM existe
-RUN mkdir -p /var/log/php-fpm
-
+RUN mkdir -p /var/log/php-fpm && \
+    chown -R www-data:www-data /var/log/php-fpm && \
+    chmod -R 755 /var/log/php-fpm && \
+    touch /var/log/php-fpm/www-error.log && \
+    chown www-data:www-data /var/log/php-fpm/www-error.log
+    
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
