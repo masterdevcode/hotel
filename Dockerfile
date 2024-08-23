@@ -41,6 +41,10 @@ COPY ./nginx/nginx.conf /etc/nginx/sites-available/default
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
+
+# Remove the default server block to avoid conflicts
+RUN rm /etc/nginx/sites-enabled/default
+
 # Exposer le port 80
 EXPOSE 80
 
