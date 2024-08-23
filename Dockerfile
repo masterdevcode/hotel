@@ -29,13 +29,17 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 
 # Copier l'application depuis l'étape de build
 COPY --from=build /app /var/www/html
 
 # Copier la configuration Nginx
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Copier le script de configuration PHP-FPM
+COPY ./configure-php-fpm.sh /usr/local/bin/configure-php-fpm.sh
+RUN chmod +x /usr/local/bin/configure-php-fpm.sh && /usr/local/bin/configure-php-fpm.sh
 
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
