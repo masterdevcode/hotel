@@ -41,8 +41,8 @@ COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-# Exposer le port 80
-EXPOSE 80
+# Exposer les ports nécessaires
+EXPOSE 80 9000
 
 # Démarrer Nginx et PHP-FPM
-CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
