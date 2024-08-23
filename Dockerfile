@@ -42,7 +42,7 @@ COPY ./configure-php-fpm.sh /usr/local/bin/configure-php-fpm.sh
 RUN chmod +x /usr/local/bin/configure-php-fpm.sh && /usr/local/bin/configure-php-fpm.sh
 
 # Copier la configuration PHP-FPM personnalisée
-COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./nginx/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 
 # S'assurer que le répertoire de logs PHP-FPM existe
 RUN mkdir -p /var/log/php-fpm
