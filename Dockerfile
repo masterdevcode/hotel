@@ -8,7 +8,7 @@ COPY composer.json composer.lock ./
 
 # Installer les dépendances
 RUN composer install --no-dev --optimize-autoloader --no-scripts
-
+RUN composer update
 # Copier le reste de l'application
 COPY . .
 
