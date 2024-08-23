@@ -19,7 +19,7 @@ RUN php artisan config:cache && \
     php artisan event:cache
 
 # Étape de production
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
 # Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
