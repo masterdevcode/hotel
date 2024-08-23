@@ -43,7 +43,8 @@ RUN chmod +x /usr/local/bin/configure-php-fpm.sh && /usr/local/bin/configure-php
 
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exposer les ports nécessaires
 EXPOSE 80 9000
