@@ -1,7 +1,8 @@
 FROM php:8.1-fpm
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update -yq \
+    && apt-get install -yq \
     nginx \
     supervisor \
     mysql-client \
@@ -14,11 +15,14 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     git \
     unzip \
-    libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip intl xml pdo pdo_mysql \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    libxml2-dev
+
+# Configure and install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip intl xml pdo pdo_mysql
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
