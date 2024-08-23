@@ -8,8 +8,14 @@ RUN apk add --no-cache \
     nodejs \
     npm
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql gd mbstring exif mysqli intl openssl
+# Installer les dépendances système et les extensions PHP nécessaires
+RUN apt-get update && apt-get install -y \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libzip-dev libicu-dev git unzip libxml2-dev nginx \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip intl xml pdo pdo_mysql  mysqli exif mbstring openssl\
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
