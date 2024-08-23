@@ -18,7 +18,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copier les fichiers de l'application
-COPY . /var/www/html
+COPY . .
 
 # Installer les dépendances de l'application
 RUN composer install --no-dev --optimize-autoloader
@@ -33,8 +33,8 @@ RUN php artisan config:cache && \
 COPY ./nginx/nginx.conf /etc/nginx/sites-available/default
 
 # Définir les permissions correctes
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+RUN chown -R www-data:www-data . \
+    && chmod -R 775 storage
 
 # Exposer le port 80
 EXPOSE 80
