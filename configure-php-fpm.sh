@@ -1,9 +1,18 @@
 #!/bin/bash
 
-# Vérifie si le fichier www.conf existe
-if [ -f /usr/local/etc/php-fpm.d/www.conf ]; then
-  # Ajoute la ligne listen = 9000 si elle n'existe pas
-  grep -q '^listen = 9000' /usr/local/etc/php-fpm.d/www.conf || echo 'listen = 9000' >> /usr/local/etc/php-fpm.d/www.conf
+CONFIG_FILE="/usr/local/etc/php-fpm.d/www.conf"
+
+if [ -f "$CONFIG_FILE" ]; then
+    if ! grep -q '^listen = 9000' "$CONFIG_FILE"; then
+        echo "Ajout de 'listen = 9000' à la configuration PHP-FPM."
+        echo 'listen = 9000' >> "$CONFIG_FILE"
+        echo "Configuration mise à jour avec succès."
+    else
+        echo "La configuration 'listen = 9000' existe déjà dans le fichier."
+    fi
 else
-  echo "Le fichier de configuration PHP-FPM n'existe pas à l'emplacement attendu."
+    echo "Erreur: Le fichier de configuration PHP-FPM n'existe pas à l'emplacement $CONFIG_FILE"
+    exit 1
 fi
+
+echo "Configuration PHP-FPM terminée."
