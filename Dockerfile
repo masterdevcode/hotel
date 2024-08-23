@@ -42,7 +42,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
 # Exposer le port 80
-EXPOSE 80 9000
+EXPOSE 80
 
 # Démarrer Nginx et PHP-FPM
 CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
