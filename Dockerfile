@@ -7,7 +7,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Installer les dépendances
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install 
 
 # Copier le reste de l'application
 COPY . .
@@ -29,7 +29,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
+    php-fpm \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl php-fpm
 
 # Copier l'application depuis l'étape de build
 COPY --from=build /app /var/www/html
@@ -50,7 +51,7 @@ RUN mkdir -p /var/log/php-fpm && \
     chmod -R 755 /var/log/php-fpm && \
     touch /var/log/php-fpm/www-error.log && \
     chown www-data:www-data /var/log/php-fpm/www-error.log
-    
+
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
