@@ -114,7 +114,7 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 USER www
 
 # Copier la configuration Nginx
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/app.conf
 
 # Expose port 9000 and start the PHP-FPM server
 EXPOSE 9000
