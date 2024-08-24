@@ -1,5 +1,5 @@
 # Étape de build
-FROM composer:2.4.1 as build
+FROM composer:2 as build
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY composer.json ./
 
 # Installer les dépendances
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copier le reste de l'application
 COPY . .
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl php-fpm
 
 # Copier l'application depuis l'étape de build
 COPY --from=build /app /var/www/html
@@ -53,6 +53,7 @@ RUN mkdir -p /var/log/php-fpm && \
 
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exposer les ports nécessaires
