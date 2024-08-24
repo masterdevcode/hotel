@@ -7,7 +7,9 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Installer les dépendances
-RUN composer install 
+RUN composer update
+RUN composer install
+
 
 # Copier le reste de l'application
 COPY . .
@@ -53,7 +55,6 @@ RUN mkdir -p /var/log/php-fpm && \
 
 # Définir les permissions correctes
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Exposer les ports nécessaires
