@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: php-fpm-container
-    expose:
-      - 9000
+    ports:
+      - "9001:9000"
     networks:
       - app-network
 
