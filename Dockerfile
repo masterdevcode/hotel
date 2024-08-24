@@ -108,14 +108,13 @@ COPY --chown=www:www . /var/www
 
 
 # Définir les permissions correctes
-RUN chown -R www-data:www-data /var/www/ \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Change the current user to 'www'
 USER www
 
 # Copier la configuration Nginx
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/
 
 # Expose port 9000 and start the PHP-FPM server
 EXPOSE 9000
