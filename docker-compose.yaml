@@ -13,7 +13,7 @@ services:
     networks:
       - app-network
 
-ebserver:
+  Webserver:
     build:
       context: .
       dockerfile: Dockerfile.nginx
