@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     php-fpm \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl php-fpm
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 
 # Copier l'application depuis l'étape de build
 COPY --from=build /app /var/www/html
