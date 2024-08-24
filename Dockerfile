@@ -1,13 +1,12 @@
 # Étape de build
-FROM composer:2 as build
+FROM composer:2.4.1 as build
 
 WORKDIR /app
 
 # Copier les fichiers de dépendances
-COPY composer.json composer.lock ./
+COPY composer.json ./
 
 # Installer les dépendances
-RUN composer update
 RUN composer install
 
 
