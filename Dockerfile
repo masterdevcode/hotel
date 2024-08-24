@@ -115,7 +115,7 @@ RUN chown -R www-data:www-data /var/www/ \
 USER www
 
 # Copier la configuration Nginx
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 9000 and start the PHP-FPM server
 EXPOSE 9000
