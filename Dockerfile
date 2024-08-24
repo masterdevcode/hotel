@@ -4,11 +4,10 @@ FROM composer:2.4.1 as build
 WORKDIR /app
 
 # Copier les fichiers de dépendances
-COPY composer.json ./
+COPY composer.json composer.lock ./
 
 # Installer les dépendances
-RUN composer install
-
+RUN composer install --no-dev --optimize-autoloader
 
 # Copier le reste de l'application
 COPY . .
