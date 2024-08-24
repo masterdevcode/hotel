@@ -100,22 +100,19 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Add a user for the Laravel application
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy existing application directory contents and set the proper permissions
 COPY --chown=www:www . /var/www
 
-
-# Définir les permissions correctes
+# Set proper permissions
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Change the current user to 'www'
 USER www
 
-# Copier la configuration Nginx
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/app.conf
-
-# Expose port 9000 and start the PHP-FPM server
+# Expose port 9000 for PHP-FPM
 EXPOSE 9000
+
+# Start PHP-FPM server
 CMD ["php-fpm"]

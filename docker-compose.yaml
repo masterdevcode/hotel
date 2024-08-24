@@ -5,13 +5,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: laravel-app
-    container_name: laravel-app
-    restart: unless-stopped
+    container_name: php-fpm-container
+    expose:
+      - 9000
+    networks:
+      - app-network
+
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: nginx-container
     ports:
       - "86:80"
     networks:
       - app-network
+    depends_on:
+      - app
 
 networks:
   app-network:
