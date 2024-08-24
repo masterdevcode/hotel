@@ -29,7 +29,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    php8.2-fpm \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 
 # Copier l'application depuis l'étape de build
