@@ -7,7 +7,7 @@ WORKDIR /app
 COPY composer.json ./
 
 # Installer les dépendances
-RUN composer install  --optimize-autoloader 
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copier le reste de l'application
 COPY . .
