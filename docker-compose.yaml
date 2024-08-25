@@ -3,27 +3,16 @@ version: '3.8'
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
-    image: laravel-app
-    container_name: laravel-app
-    restart: unless-stopped
+      context: . # This assumes the Dockerfile is in the same directory
+      dockerfile: Dockerfile # Optional if your Dockerfile is named 'Dockerfile'
+    image: laravel-app # This will tag the built image as 'laravel-app'
+    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    environment:
+      - PHP_OPCACHE_ENABLE=1
     ports:
-      - "9001:9000"
+      - "80:80" # Map port 80 on the host to port 80 in the container
     networks:
       - app-network
-
-  webserver:
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
-    container_name: nginx-container
-    ports:
-      - "86:80"
-    networks:
-      - app-network
-    depends_on:
-      - app
 
 networks:
   app-network:

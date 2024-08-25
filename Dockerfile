@@ -61,61 +61,33 @@
 # # Démarrer Nginx et PHP-FPM
 # CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
 
-# Use PHP 8.2-FPM as the base image
-FROM php:8.2-fpm
+# Use a PHP 8.3-FPM with Nginx base image
+FROM serversideup/php:8.3-fpm-nginx
 
-# Copy composer.lock and composer.json
-COPY composer.json /var/www/
+# Enable OPcache in PHP
+ENV PHP_OPCACHE_ENABLE=1
 
-# Set the working directory
-WORKDIR /var/www
+# Switch to root user to perform system-level installations
+USER root
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl
+# Install Node.js (version 20)
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Clear the cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy application code to the container and set the correct ownership
+COPY --chown=www-data:www-data . /var/www/html
 
-# Install PHP extensions
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
+# Switch to the www-data user for security
+USER www-data
 
-# Copier le reste de l'application
-COPY . .
+# Install Node.js dependencies
+# RUN npm install
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Build the frontend assets
+RUN npm run build
 
-# Add a user for the Laravel application
-RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
+# Install PHP dependencies using Composer
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Copy existing application directory contents and set the proper permissions
-COPY --chown=www:www . /var/www
-
-# Set proper permissions
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-
-# Change the current user to 'www'
-USER www
-
-# Expose port 9000 for PHP-FPM
-EXPOSE 9000
-
-# Start PHP-FPM server
-CMD ["php-fpm"]
