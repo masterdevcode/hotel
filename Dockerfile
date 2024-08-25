@@ -78,6 +78,7 @@ USER root
 
 # Copy application code to the container and set the correct ownership
 COPY --chown=www-data:www-data . /var/www/html
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
@@ -99,5 +100,5 @@ USER www-data
 # RUN npm run build
 
 # Install PHP dependencies using Composer
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN composer install --no-interaction
 
