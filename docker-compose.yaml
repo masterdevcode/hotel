@@ -10,10 +10,26 @@ services:
     environment:
       - PHP_OPCACHE_ENABLE=1
     ports:
-      - "86:80" # Map port 80 on the host to port 80 in the container
+      - "80:80" # Map port 80 on the host to port 80 in the container
+    networks:
+      - app-network
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: ["-H", "unix:///var/run/docker.sock"]
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "portainer_data:/data"
+    ports:
+      - "9000:9000" # Portainer's web UI will be accessible on port 9000
+    restart: always
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  portainer_data:
