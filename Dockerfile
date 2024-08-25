@@ -80,7 +80,13 @@ USER root
 COPY --chown=www-data:www-data . /var/www/html
 
 # Installer les dépendances nécessaires
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 # Switch to the www-data user for security
 USER www-data
 
