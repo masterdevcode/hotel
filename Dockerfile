@@ -71,10 +71,10 @@ ENV PHP_OPCACHE_ENABLE=1
 USER root
 
 # Install Node.js (version 20)
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    # apt-get install -y nodejs && \
+    # apt-get clean && \
+    # rm -rf /var/lib/apt/lists/*
 
 # Copy application code to the container and set the correct ownership
 COPY --chown=www-data:www-data . /var/www/html
@@ -86,7 +86,7 @@ USER www-data
 # RUN npm install
 
 # Build the frontend assets
-RUN npm run build
+# RUN npm run build
 
 # Install PHP dependencies using Composer
 RUN composer install --no-interaction --optimize-autoloader --no-dev
