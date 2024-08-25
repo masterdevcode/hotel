@@ -79,8 +79,12 @@ USER root
 # Copy application code to the container and set the correct ownership
 COPY --chown=www-data:www-data . /var/www/html
 
+# Installer les dépendances nécessaires
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 # Switch to the www-data user for security
 USER www-data
+
+
 
 # Install Node.js dependencies
 # RUN npm install
