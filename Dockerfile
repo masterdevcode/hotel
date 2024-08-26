@@ -80,9 +80,8 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     nginx \
     build-essential \
-    openssl
-
-RUN docker-php-ext-install gd pdo pdo_mysql sockets
+    openssl \
+    && docker-php-ext-install gd pdo pdo_mysql sockets
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
