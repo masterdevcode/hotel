@@ -64,7 +64,7 @@
 #========================================================================================
 
 # Use the serversideup image as the base
-FROM php:8.3-fpm-nginx
+FROM serversideup/php:8.3-fpm-nginx
 
 # Set the working directory
 WORKDIR /var/www/html
@@ -78,8 +78,11 @@ RUN composer install --optimize-autoloader --no-dev
 # Copy the default nginx configuration provided by serversideup
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
+# Create storage and bootstrap/cache directories if they don't exist
+RUN mkdir -p storage bootstrap/cache
+
 # Ensure the storage and cache directories are writable
-RUN chown -R www-data:www-data /var/www/html \
+RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # Expose the web server port
