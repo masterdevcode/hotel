@@ -83,7 +83,7 @@ RUN chmod -R 775 storage bootstrap/cache \
     && chgrp -R www-data storage bootstrap/cache
 
 # Expose the web server port
-EXPOSE 80
+EXPOSE 86
 
 # Start the PHP-FPM and Nginx services
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
