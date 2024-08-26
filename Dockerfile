@@ -61,44 +61,28 @@
 # # Démarrer Nginx et PHP-FPM
 # CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
 
-# Use a PHP 8.3-FPM with Nginx base image
+#========================================================================================
+
+# Use the serversideup image as the base
 FROM serversideup/php:8.3-fpm-nginx
 
-# Enable OPcache in PHP
-ENV PHP_OPCACHE_ENABLE=1
+# Set the working directory
+WORKDIR /var/www/html
 
-# Switch to root user to perform system-level installations
-USER root
+# Copy the existing application directory contents
+COPY . /var/www/html
 
-# Install Node.js (version 20)
-# RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
-    # apt-get install -y nodejs && \
-    # apt-get clean && \
-    # rm -rf /var/lib/apt/lists/*
+# Install PHP dependencies
+RUN composer install --optimize-autoloader --no-dev
 
-# Copy application code to the container and set the correct ownership
-COPY --chown=www-data:www-data . /var/www/html
+# Ensure the storage and cache directories are writable
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copy the default nginx configuration provided by serversideup
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Installer les dépendances nécessaires
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
-# Switch to the www-data user for security
-USER www-data
+# Expose the web server port
+EXPOSE 80
 
-
-
-# Install Node.js dependencies
-# RUN npm install
-
-# Build the frontend assets
-# RUN npm run build
-
-# Install PHP dependencies using Composer
-RUN composer install --no-interaction
-
+# Start the PHP-FPM and Nginx services
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
