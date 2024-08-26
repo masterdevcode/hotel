@@ -63,17 +63,45 @@
 
 #========================================================================================
 
-FROM serversideup/php:8.3-fpm-nginx
+# Use the webdevops/php-nginx:8.3-alpine image as the base image
+FROM webdevops/php-nginx:8.3-alpine
 
-ENV PHP_OPCACHE_ENABLE=1
+# Install Laravel framework system requirements
+RUN apk add --no-cache oniguruma-dev postgresql-dev libxml2-dev \
+    && docker-php-ext-install \
+        bcmath \
+        ctype \
+        fileinfo \
+        json \
+        mbstring \
+        pdo_mysql \
+        pdo_pgsql \
+        tokenizer \
+        xml
 
-USER root
+# Copy Composer binary from the Composer official Docker image
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+# Set environment variables
+ENV WEB_DOCUMENT_ROOT /app/public
+ENV APP_ENV production
 
-COPY --chown=www-data:www-data . /var/www/html
+# Set working directory
+WORKDIR /app
 
-USER www-data
+# Copy application files
+COPY . .
 
-
+# Install Composer dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# Optimize Laravel configuration
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Change ownership of application files
+RUN chown -R application:application .
+
+# Expose port 80
+EXPOSE 80
