@@ -64,7 +64,7 @@
 #========================================================================================
 
 # Use the PHP 8.2 FPM image as the base image
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 # Define build arguments
 ARG user
@@ -85,7 +85,7 @@ RUN apt-get update && apt-get install -y \
     nginx \
     build-essential \
     openssl \
-    && docker-php-ext-install gd pdo pdo_mysql sockets exif mbstring bcmath intl
+    && docker-php-ext-install gd pdo pdo_mysql sockets exif mbstring bcmath intl pcntl imap
 
 # Copy Composer binary from the Composer official Docker image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -112,6 +112,10 @@ RUN chown -R $uid:$uid /var/www
 
 # Copy Nginx configuration
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Définir les permissions correctes
+RUN chown -R www-data:www-data /var/www/ \
+    && chmod -R 777 /var/www/storage /var/www/bootstrap/cache
 
 # Copy Supervisor configuration
 COPY ./supervisord.conf /etc/supervisord.conf
