@@ -109,6 +109,10 @@ COPY . .
 # Change ownership of application files
 RUN chown -R $uid:$uid /var/www
 
+# Copier la configuration Nginx
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+
 # Copy Supervisor configuration
 COPY ./supervisord.conf /etc/supervisord.conf
 
