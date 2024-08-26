@@ -64,7 +64,7 @@
 #========================================================================================
 
 # Use the serversideup image as the base
-FROM serversideup/php:8.3-fpm-nginx
+FROM php:8.3-fpm-nginx
 
 # Set the working directory
 WORKDIR /var/www/html
