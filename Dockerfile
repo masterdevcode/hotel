@@ -63,47 +63,51 @@
 
 #========================================================================================
 
-FROM php:8.3-fpm-alpine
+FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions
-RUN apk update && apk add --no-cache \
-    oniguruma-dev \
-    postgresql-dev \
+ARG user
+ARG uid
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install \
-        bcmath \
-        ctype \
-        fileinfo \
-        json \
-        mbstring \
-        pdo_mysql \
-        pdo_pgsql \
-        tokenizer \
-        xml
+    zip \
+    unzip \
+    supervisor \
+    nginx \
+    build-essential \
+    openssl
 
-# Copy Composer binary from the Composer official Docker image
+RUN docker-php-ext-install gd pdo pdo_mysql sockets
+
+# Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set environment variables
-ENV WEB_DOCUMENT_ROOT /app/public
-ENV APP_ENV production
+# Create system user to run Composer and Artisan Commands
+RUN useradd -G www-data,root -u $uid -d /home/$user $user
+RUN mkdir -p /home/$user/.composer && \
+    chown -R $user:$user /home/$user
 
-# Set working directory
-WORKDIR /app
+WORKDIR /var/www
 
-# Copy application files
+# If you need to fix ssl
+COPY ./openssl.cnf /etc/ssl/openssl.cnf
+# If you need add extension
+COPY ./php.ini /usr/local/etc/php/php.ini
+
+COPY composer.json ./
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
 COPY . .
 
-# Install Composer dependencies
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN chown -R $uid:$uid /var/www
 
-# Optimize Laravel configuration
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# copy supervisor configuration
+COPY ./supervisord.conf /etc/supervisord.conf
 
-# Change ownership of application files
-RUN chown -R www-data:www-data .
-
-# Expose port 80
-EXPOSE 80
+# run supervisor
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
