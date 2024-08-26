@@ -82,9 +82,8 @@ COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
-
 # Expose the web server port
 EXPOSE 80
 
 # Start the PHP-FPM and Nginx services
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
