@@ -63,7 +63,7 @@
 
 #========================================================================================
 
-FROM php:8.3-fpm
+FROM php:8.3-fpm-alpine
 
 # Install system dependencies and PHP extensions
 RUN apk update && apk add --no-cache \
