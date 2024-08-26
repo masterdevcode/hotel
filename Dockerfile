@@ -63,8 +63,10 @@
 
 #========================================================================================
 
+# Use the PHP 8.2 FPM image as the base image
 FROM php:8.2-fpm
 
+# Define build arguments
 ARG user
 ARG uid
 
@@ -83,30 +85,32 @@ RUN apt-get update && apt-get install -y \
     openssl \
     && docker-php-ext-install gd pdo pdo_mysql sockets
 
-# Get latest Composer
+# Copy Composer binary from the Composer official Docker image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
+# Create system user to run Composer and Artisan commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
 
 WORKDIR /var/www
 
-# If you need to fix ssl
+# Copy configuration files if necessary
 COPY ./openssl.cnf /etc/ssl/openssl.cnf
-# If you need add extension
 COPY ./docker-dev/php.ini /usr/local/etc/php/php.ini
 
-COPY composer.json ./
+# Copy Composer configuration and install dependencies
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
+# Copy application files
 COPY . .
 
+# Change ownership of application files
 RUN chown -R $uid:$uid /var/www
 
-# copy supervisor configuration
+# Copy Supervisor configuration
 COPY ./supervisord.conf /etc/supervisord.conf
 
-# run supervisor
+# Run Supervisor
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
