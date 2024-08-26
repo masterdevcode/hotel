@@ -67,7 +67,12 @@
 FROM webdevops/php-nginx:8.3-alpine
 
 # Install Laravel framework system requirements
-RUN apk add --no-cache oniguruma-dev postgresql-dev libxml2-dev \
+RUN apk update && apk add --no-cache \
+    oniguruma-dev \
+    postgresql-dev \
+    libxml2-dev \
+    && apk add --no-cache --virtual .build-deps \
+    autoconf gcc g++ make \
     && docker-php-ext-install \
         bcmath \
         ctype \
@@ -77,7 +82,8 @@ RUN apk add --no-cache oniguruma-dev postgresql-dev libxml2-dev \
         pdo_mysql \
         pdo_pgsql \
         tokenizer \
-        xml
+        xml \
+    && apk del .build-deps
 
 # Copy Composer binary from the Composer official Docker image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
