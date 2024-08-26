@@ -101,12 +101,11 @@ WORKDIR /var/www
 COPY ./openssl.cnf /etc/ssl/openssl.cnf
 COPY ./docker-dev/php.ini /usr/local/etc/php/php.ini
 
-# Copy Composer configuration and install dependencies
-COPY composer.json ./
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-
-# Copy application files
+# Copy application files before running composer install
 COPY . .
+
+# Install Composer dependencies
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Change ownership of application files
 RUN chown -R $uid:$uid /var/www
@@ -119,3 +118,4 @@ COPY ./supervisord.conf /etc/supervisord.conf
 
 # Run Supervisor
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
+
