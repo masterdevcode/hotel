@@ -96,7 +96,7 @@ WORKDIR /var/www
 # If you need to fix ssl
 COPY ./openssl.cnf /etc/ssl/openssl.cnf
 # If you need add extension
-COPY ./php.ini /usr/local/etc/php/php.ini
+COPY ./docker/php.ini /usr/local/etc/php/php.ini
 
 COPY composer.json ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts
