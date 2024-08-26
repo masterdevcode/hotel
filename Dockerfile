@@ -70,6 +70,8 @@ FROM php:8.2-fpm
 ARG user
 ARG uid
 
+ENV PHP_OPCACHE_ENABLE=1
+USER root
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -101,7 +103,7 @@ COPY ./docker-dev/php.ini /usr/local/etc/php/php.ini
 
 # Copy Composer configuration and install dependencies
 COPY composer.json ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Copy application files
 COPY . .
@@ -109,9 +111,8 @@ COPY . .
 # Change ownership of application files
 RUN chown -R $uid:$uid /var/www
 
-# Copier la configuration Nginx
+# Copy Nginx configuration
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-
 
 # Copy Supervisor configuration
 COPY ./supervisord.conf /etc/supervisord.conf
