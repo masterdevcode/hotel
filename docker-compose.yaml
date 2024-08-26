@@ -5,12 +5,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: my-laravel-app:latest
-    container_name: laravel_app
+      args:
+        user: appuser
+        uid: 1000
+    image: my-php-app:latest
+    container_name: php_app
     ports:
-      - "86:80"
+      - "8080:80"
     volumes:
-      - .:/app
+      - .:/var/www
     environment:
       - APP_ENV=production
     depends_on:
