@@ -100,7 +100,7 @@ COPY ./openssl.cnf /etc/ssl/openssl.cnf
 COPY ./docker-dev/php.ini /usr/local/etc/php/php.ini
 
 # Copy Composer configuration and install dependencies
-COPY composer.json composer.lock ./
+COPY composer.json ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copy application files
