@@ -10,7 +10,7 @@ services:
     environment:
       - PHP_OPCACHE_ENABLE=1
     ports:
-      - "86:80" # Map port 80 on the host to port 80 in the container
+      - "86:86" # Map port 80 on the host to port 80 in the container
     networks:
       - app-network
 
