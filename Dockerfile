@@ -105,7 +105,7 @@ COPY ./docker-dev/php.ini /usr/local/etc/php/php.ini
 COPY . .
 
 # Install Composer dependencies
-RUN composer install --no-interaction
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Change ownership of application files
 RUN chown -R $uid:$uid /var/www
