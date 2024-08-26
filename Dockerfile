@@ -63,27 +63,20 @@
 
 #========================================================================================
 
-# Use the serversideup image as the base
 FROM serversideup/php:8.3-fpm-nginx
 
-# Set the working directory
-WORKDIR /var/www/html
+ENV PHP_OPCACHE_ENABLE=1
 
-# Copy the existing application directory contents
-COPY --chown=www-data:www-data . .
+USER root
 
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt-get install -y nodejs
 
-# Copy the default nginx configuration provided by serversideup
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=www-data:www-data . /var/www/html
 
-# Ensure the storage and cache directories are writable
-RUN chmod -R 775 storage bootstrap/cache \
-    && chgrp -R www-data storage bootstrap/cache
+USER www-data
 
-# Expose the web server port
-EXPOSE 86
+RUN npm install
+RUN npm run build
 
-# Start the PHP-FPM and Nginx services
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+RUN composer install --no-interaction --optimize-autoloader --no-dev
